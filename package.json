@@ -1,6 +1,8 @@
 {
   "name": "vue-iview-admin",
-  "version": "0.1.0",
+  "version": "1.0.0",
+  "description": "A minimal vue admin template with iView UI & axios & permission control & lint",
+  "author": "何秀钢 <xiugang.he@chukou1.com>",
   "private": true,
   "scripts": {
     "dev": "vue-cli-service serve",
