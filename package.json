@@ -11,6 +11,7 @@
   },
   "dependencies": {
     "core-js": "2.6.9",
+    "iview": "3.4.2",
     "vue": "2.6.10",
     "vue-router": "3.0.6",
     "vuex": "3.1.0"
@@ -23,8 +24,8 @@
     "babel-eslint": "10.0.1",
     "eslint": "5.16.0",
     "eslint-plugin-vue": "5.2.2",
-    "node-sass": "4.12.0",
-    "sass-loader": "7.1.0",
+    "less": "2.7.3",
+    "less-loader": "4.0.5",
     "vue-template-compiler": "2.6.10"
   },
   "eslintConfig": {
