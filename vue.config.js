@@ -21,7 +21,8 @@ module.exports = {
   configureWebpack: {
     resolve: {
       alias: {
-        '@': resolve('src')
+        '@': resolve('src'),
+        '_c': resolve('src/components')
       }
     }
   }

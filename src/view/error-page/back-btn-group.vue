@@ -25,7 +25,9 @@ export default {
   },
   methods: {
     backHome() {
-      this.$router.push({ path: '/' })
+      this.$router.replace({
+        name: this.$config.homeName
+      })
     },
     backPrev() {
       this.$router.go(-1)
