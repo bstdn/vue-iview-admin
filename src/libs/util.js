@@ -45,6 +45,31 @@ export const getMenuByRouter = (list, access) => {
   return res
 }
 
+export const getBreadCrumbList = (route, homeRoute) => {
+  const homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
+  const routeMetched = route.matched
+  if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
+  let res = routeMetched.filter(item => {
+    return item.meta === undefined || !item.meta.hideInBread
+  }).map(item => {
+    const meta = { ...item.meta }
+    if (meta.title && typeof meta.title === 'function') {
+      meta.__titleIsFunction__ = true
+      meta.title = meta.title(route)
+    }
+    const obj = {
+      icon: (item.meta && item.meta.icon) || '',
+      name: item.name,
+      meta: meta
+    }
+    return obj
+  })
+  res = res.filter(item => {
+    return !item.meta.hideInMenu
+  })
+  return [{ ...homeItem, to: homeRoute.path }, ...res]
+}
+
 export const getRouteTitleHandled = (route) => {
   const router = { ...route }
   const meta = { ...route.meta }
@@ -68,6 +93,22 @@ export const showTitle = (item, vm) => {
     else title = vm.$t(item.name)
   } else title = (item.meta && item.meta.title) || item.name
   return title
+}
+
+export const getHomeRoute = (routers, homeName = 'home') => {
+  let i = -1
+  const len = routers.length
+  let homeRoute = {}
+  while (++i < len) {
+    const item = routers[i]
+    if (item.children && item.children.length) {
+      const res = getHomeRoute(item.children, homeName)
+      if (res.name) return res
+    } else {
+      if (item.name === homeName) homeRoute = item
+    }
+  }
+  return homeRoute
 }
 
 const hasAccess = (access, route) => {
@@ -115,6 +156,10 @@ export const findNodeUpperByClasses = (ele, classes) => {
       return findNodeUpperByClasses(parentNode, classes)
     }
   }
+}
+
+export const localSave = (key, value) => {
+  localStorage.setItem(key, value)
 }
 
 export const localRead = (key) => {

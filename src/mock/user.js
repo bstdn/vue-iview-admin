@@ -40,5 +40,12 @@ export default [
       const { token } = config.query
       return users[token]
     }
+  },
+  {
+    url: '/user/logout',
+    type: 'post',
+    response: () => {
+      return null
+    }
   }
 ]

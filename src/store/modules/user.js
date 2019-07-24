@@ -1,4 +1,4 @@
-import { login, getUserInfo } from '@/api/user'
+import { login, getUserInfo, logout } from '@/api/user'
 import { setToken, getToken } from '@/libs/util'
 
 const state = {
@@ -68,6 +68,17 @@ const actions = {
       } catch (error) {
         reject(error)
       }
+    })
+  },
+  handleLogOut({ state, commit }) {
+    return new Promise((resolve, reject) => {
+      logout(state.token).then(() => {
+        commit('setToken', '')
+        commit('setAccess', [])
+        resolve()
+      }).catch(err => {
+        reject(err)
+      })
     })
   }
 }

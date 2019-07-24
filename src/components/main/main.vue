@@ -9,6 +9,13 @@
       </side-menu>
     </Sider>
     <Layout>
+      <Header class="header-con">
+        <header-bar :collapsed="collapsed" @on-coll-change="handleCollapsedChange">
+          <user :user-avatar="userAvatar" />
+          <language v-if="$config.useI18n" style="margin-right: 10px;" :lang="local" @on-lang-change="setLocal" />
+          <fullscreen v-model="isFullscreen" style="margin-right: 10px;" />
+        </header-bar>
+      </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
           <Content class="content-wrapper">
@@ -23,28 +30,61 @@
 </template>
 
 <script>
+import { mapMutations } from 'vuex'
 import SideMenu from './components/side-menu'
+import HeaderBar from './components/header-bar'
+import User from './components/user'
+import Language from './components/language'
+import Fullscreen from './components/fullscreen'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
+import routers from '@/router/routers'
 
 export default {
   name: 'Main',
   components: {
-    SideMenu
+    SideMenu,
+    HeaderBar,
+    User,
+    Language,
+    Fullscreen
   },
   data() {
     return {
       collapsed: false,
       minLogo,
-      maxLogo
+      maxLogo,
+      isFullscreen: false
     }
   },
   computed: {
+    userAvatar() {
+      return this.$store.state.user.avatarImgPath
+    },
     menuList() {
       return this.$store.getters['app/menuList']
+    },
+    local() {
+      return this.$store.state.app.local
     }
   },
+  watch: {
+    '$route'(newRoute) {
+      this.setBreadCrumb(newRoute)
+      this.$refs.sideMenu.updateOpenName(newRoute.name)
+    }
+  },
+  mounted() {
+    this.setHomeRoute(routers)
+    this.setBreadCrumb(this.$route)
+    this.setLocal(this.$i18n.locale)
+  },
   methods: {
+    ...mapMutations('app', [
+      'setBreadCrumb',
+      'setLocal',
+      'setHomeRoute'
+    ]),
     turnToPage(route) {
       let { name, params, query } = {}
       if (typeof route === 'string') name = route
@@ -62,6 +102,9 @@ export default {
         params,
         query
       })
+    },
+    handleCollapsedChange(state) {
+      this.collapsed = state
     }
   }
 }

@@ -21,3 +21,10 @@ export const getUserInfo = (token) => {
     }
   })
 }
+
+export const logout = (token) => {
+  return axios.request({
+    url: '/user/logout',
+    method: 'post'
+  })
+}
