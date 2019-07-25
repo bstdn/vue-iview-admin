@@ -18,10 +18,14 @@
       </Header>
       <Content class="main-content-con">
         <Layout class="main-layout-con">
+          <div class="tag-nav-wrapper">
+            <tags-nav :value="$route" :list="tagNavList" @input="handleClick" @on-close="handleCloseTag" />
+          </div>
           <Content class="content-wrapper">
-            <keep-alive>
+            <keep-alive :include="cacheList">
               <router-view />
             </keep-alive>
+            <ABackTop :height="100" :bottom="80" :right="50" container=".content-wrapper" />
           </Content>
         </Layout>
       </Content>
@@ -33,19 +37,24 @@
 import { mapMutations } from 'vuex'
 import SideMenu from './components/side-menu'
 import HeaderBar from './components/header-bar'
+import TagsNav from './components/tags-nav'
 import User from './components/user'
+import ABackTop from './components/a-back-top'
 import Language from './components/language'
 import Fullscreen from './components/fullscreen'
 import minLogo from '@/assets/images/logo-min.jpg'
 import maxLogo from '@/assets/images/logo.jpg'
 import routers from '@/router/routers'
+import { getNewTagList, routeEqual } from '@/libs/util'
 
 export default {
   name: 'Main',
   components: {
     SideMenu,
     HeaderBar,
+    TagsNav,
     User,
+    ABackTop,
     Language,
     Fullscreen
   },
@@ -58,8 +67,14 @@ export default {
     }
   },
   computed: {
+    tagNavList() {
+      return this.$store.state.app.tagNavList
+    },
     userAvatar() {
       return this.$store.state.user.avatarImgPath
+    },
+    cacheList() {
+      return ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
     },
     menuList() {
       return this.$store.getters['app/menuList']
@@ -70,20 +85,39 @@ export default {
   },
   watch: {
     '$route'(newRoute) {
+      const { name, query, params, meta } = newRoute
+      this.addTag({
+        route: { name, query, params, meta },
+        type: 'push'
+      })
       this.setBreadCrumb(newRoute)
+      this.setTagNavList(getNewTagList(this.tagNavList, newRoute))
       this.$refs.sideMenu.updateOpenName(newRoute.name)
     }
   },
   mounted() {
+    this.setTagNavList()
     this.setHomeRoute(routers)
+    const { name, params, query, meta } = this.$route
+    this.addTag({
+      route: { name, params, query, meta }
+    })
     this.setBreadCrumb(this.$route)
     this.setLocal(this.$i18n.locale)
+    if (!this.tagNavList.find(item => item.name === this.$route.name)) {
+      this.$router.push({
+        name: this.$config.homeName
+      })
+    }
   },
   methods: {
     ...mapMutations('app', [
       'setBreadCrumb',
+      'setTagNavList',
+      'addTag',
       'setLocal',
-      'setHomeRoute'
+      'setHomeRoute',
+      'closeTag'
     ]),
     turnToPage(route) {
       let { name, params, query } = {}
@@ -105,6 +139,21 @@ export default {
     },
     handleCollapsedChange(state) {
       this.collapsed = state
+    },
+    handleCloseTag(res, type, route) {
+      if (type !== 'others') {
+        if (type === 'all') {
+          this.turnToPage(this.$config.homeName)
+        } else {
+          if (routeEqual(this.$route, route)) {
+            this.closeTag(route)
+          }
+        }
+      }
+      this.setTagNavList(res)
+    },
+    handleClick(item) {
+      this.turnToPage(item)
     }
   }
 }
