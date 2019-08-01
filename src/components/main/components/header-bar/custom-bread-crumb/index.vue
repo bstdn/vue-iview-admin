@@ -35,17 +35,14 @@ export default {
   methods: {
     showTitle(item) {
       return showTitle(item, this)
-    },
-    isCustomIcon(iconName) {
-      return iconName.indexOf('_') === 0
-    },
-    getCustomIconName(iconName) {
-      return iconName.slice(1)
     }
   }
 }
 </script>
 
 <style lang="less">
-@import './custom-bread-crumb.less';
+.custom-bread-crumb {
+  display: inline-block;
+  vertical-align: top;
+}
 </style>

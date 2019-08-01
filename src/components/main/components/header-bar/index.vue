@@ -35,5 +35,20 @@ export default {
 </script>
 
 <style lang="less">
-@import './header-bar.less';
+.header-bar {
+  width: 100%;
+  height: 100%;
+  position: relative;
+
+  .custom-content-con {
+    float: right;
+    height: auto;
+    padding-right: 20px;
+    line-height: 64px;
+
+    & > * {
+      float: right;
+    }
+  }
+}
 </style>

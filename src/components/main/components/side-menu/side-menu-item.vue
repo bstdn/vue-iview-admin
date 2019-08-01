@@ -16,12 +16,12 @@
     </template>
   </Submenu>
 </template>
+
 <script>
-import mixin from './mixin'
-import itemMixin from './item-mixin'
+import mixin, { mixinItem } from './mixin'
 
 export default {
   name: 'SideMenuItem',
-  mixins: [mixin, itemMixin]
+  mixins: [mixin, mixinItem]
 }
 </script>

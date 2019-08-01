@@ -35,5 +35,15 @@ export default {
 </script>
 
 <style lang="less">
-  @import './user.less';
+.user {
+  &-avatar-dropdown {
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: middle;
+
+    .ivu-badge-dot {
+      top: 16px;
+    }
+  }
+}
 </style>

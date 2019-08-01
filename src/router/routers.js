@@ -9,7 +9,7 @@ export default [
       title: 'Login - 登录',
       hideInMenu: true
     },
-    component: () => import('@/view/login/login.vue')
+    component: () => import('@/view/login/index')
   },
   {
     path: '/',
@@ -50,7 +50,7 @@ export default [
           icon: 'md-funnel',
           title: '二级-1'
         },
-        component: () => import('@/view/multilevel/level-2-1.vue')
+        component: () => import('@/view/multilevel/level-2-1')
       },
       {
         path: 'level_2_2',
@@ -70,7 +70,7 @@ export default [
               icon: 'md-funnel',
               title: '三级'
             },
-            component: () => import('@/view/multilevel/level-2-2/level-2-2-1.vue')
+            component: () => import('@/view/multilevel/level-2-2/level-2-2-1')
           },
           {
             path: 'level_2_2_2',
@@ -79,7 +79,7 @@ export default [
               icon: 'md-funnel',
               title: '三级'
             },
-            component: () => import('@/view/multilevel/level-2-2/level-2-2-2.vue')
+            component: () => import('@/view/multilevel/level-2-2/level-2-2-2')
           }
         ]
       },
@@ -90,7 +90,7 @@ export default [
           icon: 'md-funnel',
           title: '二级-3'
         },
-        component: () => import('@/view/multilevel/level-2-3.vue')
+        component: () => import('@/view/multilevel/level-2-3')
       }
     ]
   },
@@ -100,7 +100,7 @@ export default [
     meta: {
       hideInMenu: true
     },
-    component: () => import('@/view/error-page/401.vue')
+    component: () => import('@/view/error-page/401')
   },
   {
     path: '/500',
@@ -108,7 +108,7 @@ export default [
     meta: {
       hideInMenu: true
     },
-    component: () => import('@/view/error-page/500.vue')
+    component: () => import('@/view/error-page/500')
   },
   {
     path: '*',
@@ -116,6 +116,6 @@ export default [
     meta: {
       hideInMenu: true
     },
-    component: () => import('@/view/error-page/404.vue')
+    component: () => import('@/view/error-page/404')
   }
 ]

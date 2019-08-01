@@ -7,6 +7,7 @@
     </slot>
   </div>
 </template>
+
 <script>
 import { scrollTop } from '@/libs/util'
 import { on, off } from '@/libs/tools'

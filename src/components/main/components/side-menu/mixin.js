@@ -1,6 +1,28 @@
 import CommonIcon from '_c/common-icon'
 import { showTitle } from '@/libs/util'
 
+export const mixinItem = {
+  props: {
+    parentItem: {
+      type: Object,
+      default: () => {}
+    },
+    theme: String,
+    iconSize: Number
+  },
+  computed: {
+    parentName() {
+      return this.parentItem.name
+    },
+    children() {
+      return this.parentItem.children
+    },
+    textColor() {
+      return this.theme === 'dark' ? '#fff' : '#495060'
+    }
+  }
+}
+
 export default {
   components: {
     CommonIcon

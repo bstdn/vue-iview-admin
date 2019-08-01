@@ -9,14 +9,14 @@
     </DropdownMenu>
   </Dropdown>
 </template>
+
 <script>
-import mixin from './mixin'
-import itemMixin from './item-mixin'
+import mixin, { mixinItem } from './mixin'
 import { findNodeUpperByClasses } from '@/libs/util'
 
 export default {
   name: 'CollapsedMenu',
-  mixins: [mixin, itemMixin],
+  mixins: [mixin, mixinItem],
   props: {
     hideTitle: {
       type: Boolean,
