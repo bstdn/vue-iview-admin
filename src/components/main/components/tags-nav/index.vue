@@ -34,7 +34,7 @@
             type="dot"
             :name="item.name"
             :data-route-item="item"
-            :closable="item.name !== $config.homeName"
+            :closable="item.name !== 'home'"
             :color="isCurrentTag(item) ? 'primary' : 'default'"
             @on-close="handleClose(item)"
             @click.native="handleClick(item)"
@@ -128,11 +128,11 @@ export default {
     handleTagsOption(type) {
       if (type.includes('all')) {
         // 关闭所有，除了home
-        const res = this.list.filter(item => item.name === this.$config.homeName)
+        const res = this.list.filter(item => item.name === 'home')
         this.$emit('on-close', res, 'all')
       } else if (type.includes('others')) {
         // 关闭除当前页和home页的其他页
-        const res = this.list.filter(item => routeEqual(this.currentRouteObj, item) || item.name === this.$config.homeName)
+        const res = this.list.filter(item => routeEqual(this.currentRouteObj, item) || item.name === 'home')
         this.$emit('on-close', res, 'others', this.currentRouteObj)
         setTimeout(() => {
           this.getTagElementByRoute(this.currentRouteObj)
@@ -191,7 +191,7 @@ export default {
       })
     },
     contextMenu(item, e) {
-      if (item.name === this.$config.homeName) {
+      if (item.name === 'home') {
         return
       }
       this.visible = true

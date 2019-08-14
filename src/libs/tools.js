@@ -8,12 +8,29 @@ export const forEach = (arr, fn) => {
   }
 }
 
-export const hasOneOf = (targetarr, arr) => {
-  return targetarr.some(_ => arr.indexOf(_) > -1)
+export const isArr = (param) => {
+  if (typeof Array.isArray === 'function') {
+    return Array.isArray(param)
+  } else {
+    return Object.prototype.toString.call(param) === '[object Array]'
+  }
 }
 
 export const getUnion = (arr1, arr2) => {
   return Array.from(new Set([...arr1, ...arr2]))
+}
+
+export const hasOneOf = (targetarr, arr) => {
+  return targetarr.some(_ => arr.indexOf(_) > -1)
+}
+
+export const oneOf = (value, validList) => {
+  for (let i = 0; i < validList.length; i++) {
+    if (value === validList[i]) {
+      return true
+    }
+  }
+  return false
 }
 
 export const on = (function() {

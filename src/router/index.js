@@ -3,9 +3,8 @@ import Router from 'vue-router'
 import routes from './routers'
 import store from '@/store'
 import iView from 'iview'
-import { setToken, getToken, canTurnTo, setTitle } from '@/libs/util'
-import config from '@/config'
-const { homeName } = config
+import { setToken, getToken, setTitle } from '@/libs/util'
+import { oneOf } from '@/libs/tools'
 
 Vue.use(Router)
 
@@ -14,39 +13,36 @@ const router = new Router({
   routes: routes
 })
 
-const LOGIN_PAGE_NAME = 'login'
-
-const turnTo = (to, access, next) => {
-  if (canTurnTo(to.name, access, routes)) next()
-  else next({ replace: true, name: 'error_401' })
-}
-
 router.beforeEach((to, from, next) => {
   iView.LoadingBar.start()
   const token = getToken()
-  if (!token && to.name !== LOGIN_PAGE_NAME) {
+  if (!token && to.name !== 'login') {
     next({
-      name: LOGIN_PAGE_NAME
+      name: 'login'
     })
-  } else if (!token && to.name === LOGIN_PAGE_NAME) {
+  } else if (!token && to.name === 'login') {
     next()
-  } else if (token && to.name === LOGIN_PAGE_NAME) {
+  } else if (token && to.name === 'login') {
     next({
-      name: homeName
+      name: 'home'
     })
   } else {
-    if (store.state.user.hasGetInfo) {
-      turnTo(to, store.state.user.access, next)
-    } else {
-      store.dispatch('user/getUserInfo').then(user => {
-        turnTo(to, user.access, next)
-      }).catch(() => {
-        setToken('')
-        next({
-          name: 'login'
-        })
+    store.dispatch('user/getUserInfo').then(user => {
+      if (to.meta && to.meta.access) {
+        if (oneOf(to.meta.access, user.access)) {
+          next()
+        } else {
+          next({ replace: true, name: 'error_401' })
+        }
+      } else {
+        next()
+      }
+    }).catch(() => {
+      setToken('')
+      next({
+        name: 'login'
       })
-    }
+    })
   }
 })
 

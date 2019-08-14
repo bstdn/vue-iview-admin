@@ -13,8 +13,6 @@ import {
 } from '@/libs/util'
 import routers from '@/router/routers'
 import router from '@/router'
-import config from '@/config'
-const { homeName } = config
 
 const closePage = (state, route) => {
   const nextRoute = getNextRoute(state.tagNavList, route)
@@ -32,7 +30,7 @@ const state = {
 }
 
 const getters = {
-  menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.access)
+  menuList: (state, getters, rootState) => getMenuByRouter(routers, rootState.user.userInfo.access)
 }
 
 const mutations = {
@@ -40,15 +38,15 @@ const mutations = {
     state.breadCrumbList = getBreadCrumbList(route, state.homeRoute)
   },
   setHomeRoute(state, routes) {
-    state.homeRoute = getHomeRoute(routes, homeName)
+    state.homeRoute = getHomeRoute(routes, 'home')
   },
   setTagNavList(state, list) {
     let tagList = []
     if (list) {
       tagList = [...list]
     } else tagList = getTagNavListFromLocalstorage() || []
-    if (tagList[0] && tagList[0].name !== homeName) tagList.shift()
-    const homeTagIndex = tagList.findIndex(item => item.name === homeName)
+    if (tagList[0] && tagList[0].name !== 'home') tagList.shift()
+    const homeTagIndex = tagList.findIndex(item => item.name === 'home')
     if (homeTagIndex > 0) {
       const homeTag = tagList.splice(homeTagIndex, 1)[0]
       tagList.unshift(homeTag)
@@ -67,7 +65,7 @@ const mutations = {
     if (!routeHasExist(state.tagNavList, router)) {
       if (type === 'push') state.tagNavList.push(router)
       else {
-        if (router.name === homeName) state.tagNavList.unshift(router)
+        if (router.name === 'home') state.tagNavList.unshift(router)
         else state.tagNavList.splice(1, 0, router)
       }
       setTagNavListInLocalstorage([...state.tagNavList])
@@ -79,13 +77,9 @@ const mutations = {
   }
 }
 
-const actions = {
-}
-
 export default {
   namespaced: true,
   state,
   getters,
-  mutations,
-  actions
+  mutations
 }

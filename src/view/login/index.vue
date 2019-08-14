@@ -1,10 +1,24 @@
 <template>
-  <div class="login">
+  <div class="login" @keydown.enter="handleSubmit">
     <div class="login-con">
       <Card icon="log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
-          <login-form @on-success-valid="handleSubmit" />
-          <p class="login-tip">输入任意用户名和密码即可</p>
+          <!-- eslint-disable -->
+          <Form ref="loginForm" :model="form" :rules="rules">
+            <FormItem prop="username">
+              <Input v-model="form.username" placeholder="请输入用户名">
+                <Icon slot="prepend" :size="16" type="ios-person" />
+              </Input>
+            </FormItem>
+            <FormItem prop="password">
+              <Input v-model="form.password" type="password" placeholder="请输入密码">
+                <Icon slot="prepend" :size="14" type="md-lock" />
+              </Input>
+            </FormItem>
+            <FormItem style="margin-bottom: 15px;">
+              <Button type="primary" long @click="handleSubmit" :loading="loading">登录</Button>
+            </FormItem>
+          </Form>
         </div>
       </Card>
     </div>
@@ -12,20 +26,39 @@
 </template>
 
 <script>
-import LoginForm from '_c/login-form'
-
 export default {
-  components: {
-    LoginForm
+  name: 'Login',
+  data() {
+    return {
+      form: {
+        username: 'admin',
+        password: '111111'
+      },
+      rules: {
+        username: [
+          { required: true, message: '账号不能为空', trigger: 'blur' }
+        ],
+        password: [
+          { required: true, message: '密码不能为空', trigger: 'blur' }
+        ]
+      },
+      loading: false
+    }
   },
   methods: {
-    handleSubmit({ username, password }) {
-      this.$store.dispatch('user/handleLogin', { username, password }).then(() => {
-        this.$store.dispatch('user/getUserInfo').then(() => {
-          this.$router.push({
-            name: this.$config.homeName
+    handleSubmit() {
+      this.$refs.loginForm.validate((valid) => {
+        if (valid) {
+          this.loading = true
+          this.$store.dispatch('user/handleLogin', this.form).then(() => {
+            this.$router.push({
+              name: 'home'
+            })
+            this.loading = false
+          }).catch(() => {
+            this.loading = false
           })
-        })
+        }
       })
     }
   }
@@ -36,7 +69,6 @@ export default {
 .login {
   width: 100%;
   height: 100%;
-  background-color: #283443;
   background-image: url('~@/assets/images/login-bg.jpg');
   background-size: cover;
   background-position: center;
@@ -47,7 +79,7 @@ export default {
     right: 160px;
     top: 50%;
     transform: translateY(-60%);
-    width: 300px;
+    width: 360px;
 
     &-header {
       font-size: 16px;
@@ -58,12 +90,6 @@ export default {
 
     .form-con {
       padding: 10px 0 0;
-    }
-
-    .login-tip {
-      font-size: 10px;
-      text-align: center;
-      color: #c3c3c3;
     }
   }
 }

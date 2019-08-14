@@ -30,7 +30,18 @@ export default [
     type: 'post',
     response: config => {
       const { username } = config.body
-      return { token: tokens[username].token }
+      const token = tokens[username]
+
+      if (!token) {
+        return {
+          code: 60204,
+          message: 'Account and password are incorrect.'
+        }
+      }
+      return {
+        code: 20000,
+        data: token
+      }
     }
   },
   {
@@ -38,14 +49,29 @@ export default [
     type: 'get',
     response: config => {
       const { token } = config.query
-      return users[token]
+      const info = users[token]
+
+      if (!info) {
+        return {
+          code: 50008,
+          message: 'Login failed, unable to get user details.'
+        }
+      }
+
+      return {
+        code: 20000,
+        data: info
+      }
     }
   },
   {
     url: '/user/logout',
     type: 'post',
     response: () => {
-      return null
+      return {
+        code: 20000,
+        data: 'success'
+      }
     }
   }
 ]

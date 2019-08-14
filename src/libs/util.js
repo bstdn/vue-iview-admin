@@ -1,12 +1,12 @@
 import Cookies from 'js-cookie'
-import { forEach, hasOneOf, objEqual } from '@/libs/tools'
+import { forEach, hasOneOf, oneOf, objEqual, isArr } from '@/libs/tools'
 import config from '@/config'
-const { title, cookieExpires, useI18n } = config
+const { title, useI18n } = config
 
 export const TOKEN_KEY = 'vue_iview_admin_token'
 
 export const setToken = (token) => {
-  Cookies.set(TOKEN_KEY, token, { expires: cookieExpires || 1 })
+  Cookies.set(TOKEN_KEY, token)
 }
 
 export const getToken = () => {
@@ -15,15 +15,32 @@ export const getToken = () => {
   else return false
 }
 
+export function removeToken() {
+  return Cookies.remove(TOKEN_KEY)
+}
+
 export const hasChild = (item) => {
   return item.children && item.children.length !== 0
 }
 
 const showThisMenuEle = (item, access) => {
-  if (item.meta && item.meta.access && item.meta.access.length) {
-    if (hasOneOf(item.meta.access, access)) return true
-    else return false
-  } else return true
+  if (item.meta && item.meta.access && access) {
+    if (isArr(item.meta.access)) {
+      if (hasOneOf(item.meta.access, access)) {
+        return true
+      } else {
+        return false
+      }
+    } else {
+      if (oneOf(item.meta.access, access)) {
+        return true
+      } else {
+        return false
+      }
+    }
+  } else {
+    return true
+  }
 }
 
 export const getMenuByRouter = (list, access) => {
@@ -104,17 +121,17 @@ export const getTagNavListFromLocalstorage = () => {
   return list ? JSON.parse(list) : []
 }
 
-export const getHomeRoute = (routers, homeName = 'home') => {
+export const getHomeRoute = (routers) => {
   let i = -1
   const len = routers.length
   let homeRoute = {}
   while (++i < len) {
     const item = routers[i]
     if (item.children && item.children.length) {
-      const res = getHomeRoute(item.children, homeName)
+      const res = getHomeRoute(item.children, 'home')
       if (res.name) return res
     } else {
-      if (item.name === homeName) homeRoute = item
+      if (item.name === 'home') homeRoute = item
     }
   }
   return homeRoute
@@ -126,25 +143,6 @@ export const getNewTagList = (list, newRoute) => {
   if (newList.findIndex(item => item.name === name) >= 0) return newList
   else newList.push({ name, path, meta })
   return newList
-}
-
-const hasAccess = (access, route) => {
-  if (route.meta && route.meta.access) return hasOneOf(access, route.meta.access)
-  else return true
-}
-
-export const canTurnTo = (name, access, routes) => {
-  const routePermissionJudge = (list) => {
-    return list.some(item => {
-      if (item.children && item.children.length) {
-        return routePermissionJudge(item.children)
-      } else if (item.name === name) {
-        return hasAccess(access, item)
-      }
-    })
-  }
-
-  return routePermissionJudge(routes)
 }
 
 export function param2Obj(url) {

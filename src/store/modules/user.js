@@ -1,50 +1,32 @@
 import { login, getUserInfo, logout } from '@/api/user'
-import { setToken, getToken } from '@/libs/util'
+import { setToken, getToken, removeToken } from '@/libs/util'
 
 const state = {
-  username: '',
-  userId: '',
-  avatarImgPath: '',
-  token: getToken(),
-  access: '',
-  hasGetInfo: false
-}
-
-const getters = {
+  userInfo: {},
+  token: getToken()
 }
 
 const mutations = {
-  setAvatar(state, avatarPath) {
-    state.avatarImgPath = avatarPath
-  },
-  setUserId(state, id) {
-    state.userId = id
-  },
-  setUsername(state, name) {
-    state.username = name
-  },
-  setAccess(state, access) {
-    state.access = access
+  setUserInfo(state, userInfo) {
+    state.userInfo = userInfo
   },
   setToken(state, token) {
     state.token = token
-    setToken(token)
-  },
-  setHasGetInfo(state, status) {
-    state.hasGetInfo = status
   }
 }
 
 const actions = {
-  handleLogin({ commit }, { username, password }) {
-    username = username.trim()
+  handleLogin({ commit }, userInfo) {
+    const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({
-        username,
+        username: username.trim(),
         password
       }).then(res => {
-        const data = res.data
+        const { data } = res
+        commit('setUserInfo', data)
         commit('setToken', data.token)
+        setToken(data.token)
         resolve()
       }).catch(err => {
         reject(err)
@@ -55,12 +37,8 @@ const actions = {
     return new Promise((resolve, reject) => {
       try {
         getUserInfo(state.token).then(res => {
-          const data = res.data
-          commit('setAvatar', data.avatar)
-          commit('setUsername', data.name)
-          commit('setUserId', data.user_id)
-          commit('setAccess', data.access)
-          commit('setHasGetInfo', true)
+          const { data } = res
+          commit('setUserInfo', data)
           resolve(data)
         }).catch(err => {
           reject(err)
@@ -70,15 +48,22 @@ const actions = {
       }
     })
   },
-  handleLogOut({ state, commit }) {
+  handleLogOut({ commit }) {
     return new Promise((resolve, reject) => {
-      logout(state.token).then(() => {
+      logout().then(() => {
         commit('setToken', '')
-        commit('setAccess', [])
+        removeToken()
         resolve()
       }).catch(err => {
         reject(err)
       })
+    })
+  },
+  resetToken({ commit }) {
+    return new Promise(resolve => {
+      commit('setToken', '')
+      removeToken()
+      resolve()
     })
   }
 }
@@ -86,7 +71,6 @@ const actions = {
 export default {
   namespaced: true,
   state,
-  getters,
   mutations,
   actions
 }

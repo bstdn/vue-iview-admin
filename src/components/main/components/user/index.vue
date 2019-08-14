@@ -27,8 +27,12 @@ export default {
         })
       })
     },
-    handleClick() {
-      this.logout()
+    handleClick(name) {
+      switch (name) {
+        case 'logout':
+          this.logout()
+          break
+      }
     }
   }
 }

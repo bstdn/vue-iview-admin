@@ -71,7 +71,7 @@ export default {
       return this.$store.state.app.tagNavList
     },
     userAvatar() {
-      return this.$store.state.user.avatarImgPath
+      return this.$store.state.user.userInfo.avatar
     },
     cacheList() {
       return ['ParentView', ...this.tagNavList.length ? this.tagNavList.filter(item => !(item.meta && item.meta.notCache)).map(item => item.name) : []]
@@ -106,7 +106,7 @@ export default {
     this.setLocal(this.$i18n.locale)
     if (!this.tagNavList.find(item => item.name === this.$route.name)) {
       this.$router.push({
-        name: this.$config.homeName
+        name: 'home'
       })
     }
   },
@@ -143,7 +143,7 @@ export default {
     handleCloseTag(res, type, route) {
       if (type !== 'others') {
         if (type === 'all') {
-          this.turnToPage(this.$config.homeName)
+          this.turnToPage('home')
         } else {
           if (routeEqual(this.$route, route)) {
             this.closeTag(route)
