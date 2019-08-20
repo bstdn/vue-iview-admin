@@ -27,7 +27,7 @@ router.beforeEach((to, from, next) => {
       name: 'home'
     })
   } else {
-    store.dispatch('user/getUserInfo').then(user => {
+    store.dispatch('user/getInfo').then(user => {
       if (to.meta && to.meta.access) {
         if (oneOf(to.meta.access, user.access)) {
           next()

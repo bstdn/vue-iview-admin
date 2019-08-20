@@ -1,7 +1,7 @@
 <template>
   <div class="login" @keydown.enter="handleSubmit">
     <div class="login-con">
-      <Card icon="log-in" title="欢迎登录" :bordered="false">
+      <Card icon="md-log-in" title="欢迎登录" :bordered="false">
         <div class="form-con">
           <!-- eslint-disable -->
           <Form ref="loginForm" :model="form" :rules="rules">
@@ -50,7 +50,7 @@ export default {
       this.$refs.loginForm.validate((valid) => {
         if (valid) {
           this.loading = true
-          this.$store.dispatch('user/handleLogin', this.form).then(() => {
+          this.$store.dispatch('user/login', this.form).then(() => {
             this.$router.push({
               name: 'home'
             })

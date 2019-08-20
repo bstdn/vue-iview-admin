@@ -57,9 +57,7 @@ export default {
     value: Object,
     list: {
       type: Array,
-      default() {
-        return []
-      }
+      default: () => []
     }
   },
   data() {

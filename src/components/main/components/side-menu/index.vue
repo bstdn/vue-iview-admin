@@ -40,9 +40,7 @@ export default {
   props: {
     menuList: {
       type: Array,
-      default() {
-        return []
-      }
+      default: () => []
     },
     collapsed: {
       type: Boolean

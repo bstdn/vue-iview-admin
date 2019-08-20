@@ -26,17 +26,9 @@ export const hasChild = (item) => {
 const showThisMenuEle = (item, access) => {
   if (item.meta && item.meta.access && access) {
     if (isArr(item.meta.access)) {
-      if (hasOneOf(item.meta.access, access)) {
-        return true
-      } else {
-        return false
-      }
+      return !!hasOneOf(item.meta.access, access)
     } else {
-      if (oneOf(item.meta.access, access)) {
-        return true
-      } else {
-        return false
-      }
+      return !!oneOf(item.meta.access, access)
     }
   } else {
     return true
@@ -64,9 +56,9 @@ export const getMenuByRouter = (list, access) => {
 
 export const getBreadCrumbList = (route, homeRoute) => {
   const homeItem = { ...homeRoute, icon: homeRoute.meta.icon }
-  const routeMetched = route.matched
-  if (routeMetched.some(item => item.name === homeRoute.name)) return [homeItem]
-  let res = routeMetched.filter(item => {
+  const routeMatched = route.matched
+  if (routeMatched.some(item => item.name === homeRoute.name)) return [homeItem]
+  let res = routeMatched.filter(item => {
     return item.meta === undefined || !item.meta.hideInBread
   }).map(item => {
     const meta = { ...item.meta }
@@ -74,12 +66,11 @@ export const getBreadCrumbList = (route, homeRoute) => {
       meta.__titleIsFunction__ = true
       meta.title = meta.title(route)
     }
-    const obj = {
+    return {
       icon: (item.meta && item.meta.icon) || '',
       name: item.name,
       meta: meta
     }
-    return obj
   })
   res = res.filter(item => {
     return !item.meta.hideInMenu

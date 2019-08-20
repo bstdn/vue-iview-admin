@@ -1,4 +1,4 @@
-import { login, getUserInfo, logout } from '@/api/user'
+import { login, getInfo, logout } from '@/api/user'
 import { setToken, getToken, removeToken } from '@/libs/util'
 
 const state = {
@@ -16,7 +16,7 @@ const mutations = {
 }
 
 const actions = {
-  handleLogin({ commit }, userInfo) {
+  login({ commit }, userInfo) {
     const { username, password } = userInfo
     return new Promise((resolve, reject) => {
       login({
@@ -24,7 +24,6 @@ const actions = {
         password
       }).then(res => {
         const { data } = res
-        commit('setUserInfo', data)
         commit('setToken', data.token)
         setToken(data.token)
         resolve()
@@ -33,24 +32,29 @@ const actions = {
       })
     })
   },
-  getUserInfo({ state, commit }) {
-    return new Promise((resolve, reject) => {
-      try {
-        getUserInfo(state.token).then(res => {
-          const { data } = res
-          commit('setUserInfo', data)
-          resolve(data)
-        }).catch(err => {
-          reject(err)
-        })
-      } catch (error) {
-        reject(error)
-      }
-    })
+  getInfo({ state, commit }) {
+    if (JSON.stringify(state.userInfo) !== '{}') {
+      return state.userInfo
+    } else {
+      return new Promise((resolve, reject) => {
+        try {
+          getInfo(state.token).then(res => {
+            const { data } = res
+            commit('setUserInfo', data)
+            resolve(data)
+          }).catch(err => {
+            reject(err)
+          })
+        } catch (error) {
+          reject(error)
+        }
+      })
+    }
   },
-  handleLogOut({ commit }) {
+  logout({ commit }) {
     return new Promise((resolve, reject) => {
       logout().then(() => {
+        commit('setUserInfo', {})
         commit('setToken', '')
         removeToken()
         resolve()

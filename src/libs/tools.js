@@ -20,8 +20,8 @@ export const getUnion = (arr1, arr2) => {
   return Array.from(new Set([...arr1, ...arr2]))
 }
 
-export const hasOneOf = (targetarr, arr) => {
-  return targetarr.some(_ => arr.indexOf(_) > -1)
+export const hasOneOf = (targets, arr) => {
+  return targets.some(_ => arr.indexOf(_) > -1)
 }
 
 export const oneOf = (value, validList) => {
